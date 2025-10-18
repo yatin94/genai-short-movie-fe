@@ -50,14 +50,13 @@ export default function RealTimeData({ userId }) {
                 setStory((prev) =>
                   prev ? prev + "\n\n" + String(parsed.story || "") : String(parsed.story || "")
                 );
-              // append script chunks instead of replacing so multiple script messages accumulate
+              // append script chunks so multiple script messages accumulate
               if ("script" in parsed)
                 setScript((prev) =>
                   prev ? prev + "\n\n" + String(parsed.script || "") : String(parsed.script || "")
                 );
                // allow older format: {message, status} -> append to story
                if (!("story" in parsed) && !("script" in parsed) && "message" in parsed) {
-                 // append message to story by default
                  setStory((s) => (s ? s + "\n\n" + parsed.message : String(parsed.message)));
                }
                return;
@@ -126,11 +125,13 @@ export default function RealTimeData({ userId }) {
     setScript("");
   };
 
-const styles = {
+  const styles = {
+    // limit the overall component to viewport height so main page doesn't scroll
     box: {
       width: 520,
       maxWidth: "100%",
-      minHeight: "70vh",
+      // ensure the component never exceeds viewport height minus some padding/header
+      maxHeight: "calc(100vh - 120px)",
       borderRadius: 10,
       padding: 18,
       background: "linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01))",
@@ -141,8 +142,15 @@ const styles = {
       flexDirection: "column",
       gap: 12,
       fontFamily: "Inter, Roboto, system-ui, -apple-system, 'Segoe UI', sans-serif",
+      overflow: "hidden", // prevent the box from scrolling the page
     },
-    header: { display: "flex", alignItems: "center", gap: 8, borderBottom: "1px solid rgba(255,255,255,0.02)", },
+    header: {
+      display: "flex",
+      alignItems: "center",
+      gap: 8,
+      borderBottom: "1px solid rgba(255,255,255,0.02)",
+      paddingBottom: 8,
+    },
     title: { fontSize: 16, fontWeight: 700, margin: 0, color: "#cfe7ff" },
     statusDot: (on) => ({
       width: 10,
@@ -155,31 +163,37 @@ const styles = {
       display: "flex",
       flexDirection: "column",
       gap: 12,
+      minHeight: 0, // allow children to shrink and enable inner scrolling
     },
+    // story smaller than script
     storySection: {
       display: "flex",
       flexDirection: "column",
       gap: 8,
-      flex: 1,
-      minHeight: 80,      // Prevent collapsing
-      maxHeight: "40vh",  // Optional: Constrain maximum height
+      flex: "0 1 30%", // take ~30% of available height
+      minHeight: 80,
+      maxHeight: "40%", // relative to box
+      minWidth: 0,
     },
     scriptSection: {
       display: "flex",
       flexDirection: "column",
       gap: 8,
-      flex: 2,
-      minHeight: 180,     // Prevent collapsing
-      maxHeight: "60vh",  // Optional: Constrain maximum height
+      flex: "1 1 70%", // take remaining (~70%) of available height
+      minHeight: 120,
+      maxHeight: "70%",
+      minWidth: 0,
     },
+    // scrolling areas inside each section
     scrollArea: {
-      flex: 1,
-      overflowY: "auto",   // Enable vertical scrolling
-      overflowX: "hidden", // Disable horizontal scrolling
+      height: "100%",
+      overflowY: "auto",
+      overflowX: "hidden",
       padding: 10,
       borderRadius: 6,
       background: "rgba(0,0,0,0.15)",
       border: "1px solid rgba(255,255,255,0.02)",
+      boxSizing: "border-box",
     },
     sectionTitle: { fontSize: 12, fontWeight: 600, color: "#a7c8ff" },
     pre: {
@@ -187,7 +201,7 @@ const styles = {
       fontFamily: "Menlo, monospace",
       fontSize: 13,
       lineHeight: 1.45,
-      color: "#4f565fff",
+      color: "#3e4c5dff",
       margin: 0,
     },
     footer: { display: "flex", gap: 8, alignItems: "center" },
@@ -200,7 +214,7 @@ const styles = {
       cursor: "pointer",
       fontSize: 13,
     },
-};
+  };
 
   return (
     <div style={styles.box} aria-live="polite" aria-label="Realtime story and script">
