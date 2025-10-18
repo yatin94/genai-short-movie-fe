@@ -1,23 +1,25 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import "./App.css";
+import Entrypoint from "./entrypoint";
+import LogsPanel from "./logs_section";
+import RealTimeData from "./real_time_data";
 
 function App() {
+  const [userId, setUserId] = useState(null);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div style={{ display: "flex", gap: 10, alignItems: "flex-start", padding: 10 }}>
+      <div style={{ width: 360, paddingRight: 35/* left: real-time data box */ }}>
+        <RealTimeData userId={userId} />
+      </div>
+
+      <div style={{ flex: 1 /* center: entrypoint */ }}>
+        <Entrypoint onSuccess={setUserId} />
+      </div>
+
+      <div style={{ width: 380 /* right: logs */ }}>
+        <LogsPanel userId={userId} />
+      </div>
     </div>
   );
 }
