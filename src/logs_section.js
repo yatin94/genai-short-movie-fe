@@ -186,13 +186,13 @@ export default function LogsPanel({ userId }) {
     },
     entrySuccess: {
       border: "1px solid rgba(34,197,94,0.12)",
-      background: "rgba(34,197,94,0.04)",
-      color: "#9ef3b6",
+      background: "rgba(34, 255, 0, 0.17)",
+      color: "#3c483fff",
     },
     entryError: {
       border: "1px solid rgba(239,68,68,0.12)",
-      background: "rgba(239,68,68,0.04)",
-      color: "#ffb3b3",
+      background: "rgba(239, 68, 68, 0.31)",
+      color: "#3c483fff",
     },
     footer: {
       padding: "8px 12px",
