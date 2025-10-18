@@ -8,7 +8,18 @@ function App() {
   const [userId, setUserId] = useState(null);
 
   return (
-    <div style={{ display: "flex", gap: 10, alignItems: "flex-start", padding: 10 }}>
+    // ensure the app root fills viewport and doesn't create a page scroll
+    <div
+      style={{
+        display: "flex",
+        gap: 10,
+        alignItems: "flex-start",
+        padding: 10,
+        height: "100vh",
+        overflow: "hidden",
+        boxSizing: "border-box",
+      }}
+    >
       <div style={{ width: 360, paddingRight: 35/* left: real-time data box */ }}>
         <RealTimeData userId={userId} />
       </div>
