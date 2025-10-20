@@ -195,13 +195,13 @@ export default function RealTimeData({ userId }) {
       border: "1px solid rgba(255,255,255,0.02)",
       boxSizing: "border-box",
     },
-    sectionTitle: { fontSize: 12, fontWeight: 600, color: "#a7c8ff" },
+    sectionTitle: { fontSize: 14, fontWeight: 600, color: "#a7c8ff" },
     pre: {
       whiteSpace: "pre-wrap",
       fontFamily: "Menlo, monospace",
       fontSize: 13,
       lineHeight: 1.45,
-      color: "#3e4c5dff",
+      color: "#d8dfe7ff",
       margin: 0,
     },
     footer: { display: "flex", gap: 8, alignItems: "center" },
@@ -221,7 +221,7 @@ export default function RealTimeData({ userId }) {
       <div style={styles.header}>
         <div style={styles.statusDot(connected)} aria-hidden="true" />
         <div style={styles.title}>Realtime Story & Script</div>
-        <div style={{ marginLeft: "auto", color: "#9fb7d9", fontSize: 13 }}>
+        <div style={{ marginLeft: "auto", color: "#9fb7d9", fontSize: 9 }}>
           {connected ? `connected (user: ${userId})` : userId ? "connecting..." : "waiting for user"}
         </div>
         <button style={styles.btn} onClick={clear} title="Clear">Clear</button>

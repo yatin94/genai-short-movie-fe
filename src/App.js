@@ -18,6 +18,7 @@ function App() {
         height: "100vh",
         overflow: "hidden",
         boxSizing: "border-box",
+        background: "#060b17",
       }}
     >
       <div style={{ width: 360, paddingRight: 35/* left: real-time data box */ }}>
@@ -28,7 +29,7 @@ function App() {
         <Entrypoint onSuccess={setUserId} />
       </div>
 
-      <div style={{ width: 380 /* right: logs */ }}>
+      <div style={{ width: 280 /* right: logs */ }}>
         <LogsPanel userId={userId} />
       </div>
     </div>

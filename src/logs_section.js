@@ -27,7 +27,7 @@ export default function LogsPanel({ userId }) {
 
     const connect = () => {
       // use ws:// for local dev and attach user id as path
-      const url = `ws://127.0.0.1:8000/ws/${encodeURIComponent(userId)}`;
+      const url = `ws://127.0.0.1:8000/logs/${encodeURIComponent(userId)}`;
       try {
         const ws = new WebSocket(url);
         wsRef.current = ws;
@@ -187,12 +187,12 @@ export default function LogsPanel({ userId }) {
     entrySuccess: {
       border: "1px solid rgba(34,197,94,0.12)",
       background: "rgba(34, 255, 0, 0.17)",
-      color: "#3c483fff",
+      color: "#cedad2bd",
     },
     entryError: {
       border: "1px solid rgba(239,68,68,0.12)",
       background: "rgba(239, 68, 68, 0.31)",
-      color: "#3c483fff",
+      color: "#cedad2bd",
     },
     footer: {
       padding: "8px 12px",
