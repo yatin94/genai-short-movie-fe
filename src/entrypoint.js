@@ -29,9 +29,10 @@ export default function Entrypoint({ onSuccess }) {
       // extract possible user id keys and notify parent
       const userId =
         response.data?.user_id || response.data?.userId || response.data?.id || null;
+      const requestId = response.data?.request_id || response.data?.requestId || null;
       if (userId && typeof onSuccess === "function") {
         try {
-          onSuccess(userId);
+          onSuccess(userId, requestId);
         } catch (err) {
           // ignore callback errors
           // (do not break UI)

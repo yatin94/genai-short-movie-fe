@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 
-export default function RealTimeData({ userId }) {
+export default function RealTimeData({ userId, requestId }) {
   const [story, setStory] = useState("");
   const [script, setScript] = useState("");
   const [connected, setConnected] = useState(false);
@@ -15,8 +15,12 @@ export default function RealTimeData({ userId }) {
   useEffect(() => {
     // close when no userId
     if (!userId) {
+      console.log("LogsPanel: no userId, closing socket and clearing logs");
       if (reconnectTimer.current) clearTimeout(reconnectTimer.current);
-      try { wsRef.current && wsRef.current.close(); } catch (_) {}
+      try { wsRef.current && wsRef.current.close(); } catch (_) {
+        console.log("LogsPanel: error closing websocket");
+      }
+      console.log("RealTimeData: no userId, closing socket and clearing data");
       wsRef.current = null;
       attemptsRef.current = 0;
       setConnected(false);
@@ -28,7 +32,7 @@ export default function RealTimeData({ userId }) {
     let mounted = true;
 
     const connect = () => {
-      const url = `ws://127.0.0.1:8000/data/${encodeURIComponent(userId)}`;
+      const url = `ws://127.0.0.1:8000/data/${encodeURIComponent(userId)}/${encodeURIComponent(requestId)}`;
       try {
         const ws = new WebSocket(url);
         wsRef.current = ws;
@@ -79,7 +83,7 @@ export default function RealTimeData({ userId }) {
           try { ws.close(); } catch (_) {}
         };
       } catch (err) {
-        scheduleReconnect();
+        // scheduleReconnect();
       }
     };
 
@@ -100,7 +104,7 @@ export default function RealTimeData({ userId }) {
       if (reconnectTimer.current) clearTimeout(reconnectTimer.current);
       try { wsRef.current && wsRef.current.close(); } catch (_) {}
     };
-  }, [userId]);
+  }, [userId, requestId]);
 
   // auto-scroll story when it updates
   useEffect(() => {

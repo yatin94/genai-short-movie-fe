@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 
-export default function LogsPanel({ userId }) {
+export default function LogsPanel({ userId, requestId }) {
   const [logs, setLogs] = useState([]); // array of {id, text, time, level}
   const [connected, setConnected] = useState(false);
   const [autoScroll, setAutoScroll] = useState(true);
@@ -12,10 +12,13 @@ export default function LogsPanel({ userId }) {
   useEffect(() => {
     // if no userId, ensure socket is closed and logs cleared
     if (!userId) {
+      console.log("LogsPanel: no userId, closing socket and clearing logs");
       if (reconnectTimer.current) clearTimeout(reconnectTimer.current);
       try {
         wsRef.current && wsRef.current.close();
-      } catch (_) {}
+      } catch (_) {
+        console.log("LogsPanel: error closing websocket");
+      }
       wsRef.current = null;
       setConnected(false);
       setAttempt(0);
@@ -27,7 +30,7 @@ export default function LogsPanel({ userId }) {
 
     const connect = () => {
       // use ws:// for local dev and attach user id as path
-      const url = `ws://127.0.0.1:8000/logs/${encodeURIComponent(userId)}`;
+      const url = `ws://127.0.0.1:8000/logs/${encodeURIComponent(userId)}/${encodeURIComponent(requestId)}`;
       try {
         const ws = new WebSocket(url);
         wsRef.current = ws;
@@ -73,9 +76,10 @@ export default function LogsPanel({ userId }) {
         };
 
         ws.onclose = () => {
+          setConnected(false);
           if (!mounted) return;
           setConnected(false);
-          scheduleReconnect();
+          // scheduleReconnect();
         };
 
         ws.onerror = () => {
@@ -84,7 +88,7 @@ export default function LogsPanel({ userId }) {
           } catch (_) {}
         };
       } catch (err) {
-        scheduleReconnect();
+        // scheduleReconnect();
       }
     };
 
@@ -108,7 +112,7 @@ export default function LogsPanel({ userId }) {
         wsRef.current && wsRef.current.close();
       } catch (_) {}
     };
-  }, [userId]);
+  }, [userId, requestId]);
 
   // auto-scroll on new logs
   useEffect(() => {

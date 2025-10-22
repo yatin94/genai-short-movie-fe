@@ -1,14 +1,16 @@
 import React, { useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
 import Entrypoint from "./entrypoint";
 import LogsPanel from "./logs_section";
 import RealTimeData from "./real_time_data";
+import Admin from "./Admin";
 
-function App() {
+function MainApp() {
   const [userId, setUserId] = useState(null);
+  const [requestId, setRequestId] = useState(null);
 
   return (
-    // ensure the app root fills viewport and doesn't create a page scroll
     <div
       style={{
         display: "flex",
@@ -21,19 +23,29 @@ function App() {
         background: "#060b17",
       }}
     >
-      <div style={{ width: 360, paddingRight: 35/* left: real-time data box */ }}>
-        <RealTimeData userId={userId} />
+      <div style={{ width: 360, paddingRight: 35 }}>
+        <RealTimeData userId={userId} requestId={requestId} />
       </div>
-
-      <div style={{ flex: 1 /* center: entrypoint */ }}>
-        <Entrypoint onSuccess={setUserId} />
+      <div style={{ flex: 1 }}>
+        <Entrypoint onSuccess={(userId, requestId) => {
+          setUserId(userId);
+          setRequestId(requestId);
+        }} />
       </div>
-
-      <div style={{ width: 280 /* right: logs */ }}>
-        <LogsPanel userId={userId} />
+      <div style={{ width: 280 }}>
+        <LogsPanel userId={userId} requestId={requestId} />
       </div>
     </div>
   );
 }
 
-export default App;
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<MainApp />} />
+        <Route path="/admin" element={<Admin />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
