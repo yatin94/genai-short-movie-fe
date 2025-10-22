@@ -1,15 +1,29 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function BgStatusDropdown({ userId, requestId }) {
+  const navigate = useNavigate(); // 👈 add this
+
   const [loading, setLoading] = useState(true);
   const [bgStatus, setBgStatus] = useState("");
   const [logs, setLogs] = useState([]);
   const [error, setError] = useState("");
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      // No token → go to login
+      localStorage.setItem("redirectAfterLogin", "/admin");
+      navigate("/login");
+      return;
+    }
     setLoading(true);
     setError("");
-    fetch(`http://127.0.0.1:8000/bgstatus/${userId}/${requestId}`)
+    fetch(`http://127.0.0.1:8000/bgstatus/${userId}/${requestId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },})
       .then(res => {
         if (!res.ok) throw new Error("Failed to fetch BG status");
         return res.json();

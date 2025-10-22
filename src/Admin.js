@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { FaEye, FaSyncAlt } from "react-icons/fa";
 import AdminDrawer from "./AdminDrawer";
+import { useNavigate } from "react-router-dom";
+
 
 export default function Admin() {
+  const navigate = useNavigate(); // 👈 add this
+
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedRequests, setSelectedRequests] = useState([]);
   const [selectedUserId, setSelectedUserId] = useState("");
@@ -17,10 +21,30 @@ export default function Admin() {
 
   // Refetch logic
   const fetchAdminData = () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      // No token → go to login
+      localStorage.setItem("redirectAfterLogin", "/admin");
+      navigate("/login");
+      return;
+    }
+
+
     setLoading(true);
     setError("");
-    fetch("http://127.0.0.1:8000/admin")
+    fetch("http://127.0.0.1:8000/admin", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },})
       .then((res) => {
+        if (res.status === 401 || res.status === 403) {
+          // 👇 store current path and redirect to login
+          localStorage.setItem("redirectAfterLogin", "/admin");
+          navigate("/login");
+          throw new Error("Unauthenticated");
+        }
+
         if (!res.ok) throw new Error("Failed to fetch admin data");
         return res.json();
       })

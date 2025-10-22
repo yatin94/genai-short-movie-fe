@@ -5,6 +5,7 @@ import Entrypoint from "./entrypoint";
 import LogsPanel from "./logs_section";
 import RealTimeData from "./real_time_data";
 import Admin from "./Admin";
+import Login from "./Login";
 
 function MainApp() {
   const [userId, setUserId] = useState(null);
@@ -45,6 +46,8 @@ export default function App() {
       <Routes>
         <Route path="/" element={<MainApp />} />
         <Route path="/admin" element={<Admin />} />
+        <Route path="/login" element={<Login />} />
+
       </Routes>
     </BrowserRouter>
   );
